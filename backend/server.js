@@ -1,21 +1,29 @@
 const express = require("express");
 const cors = require("cors");
 const pool = require("./db");
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-// Our first API route
+// GET: Fetch all products
 app.get("/api/products", async function(req, res) {
     try {
-        const result = await pool.query("SELECT * FROM products ORDER BY id");
+        const result = await pool.query(
+            "SELECT * FROM products ORDER BY id"
+        );
+
         res.json(result.rows);
+
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Failed to fetch products" });
     }
-    app.post("/api/products", async function(req, res) {
+});
+
+// POST: Add a new product
+app.post("/api/products", async function(req, res) {
     try {
         const { name, price } = req.body;
 
@@ -35,17 +43,8 @@ app.get("/api/products", async function(req, res) {
         res.status(500).json({ error: "Failed to add product" });
     }
 });
-});
+
+// Start server
 app.listen(5000, function() {
     console.log("Server running on port 5000");
 });
-fetch("http://localhost:5000/api/products")
-    .then(function(response) {
-        return response.json();
-    })
-    .then(function(products) {
-        console.log("Products received from backend:", products);
-    })
-    .catch(function(error) {
-        console.log("Error:", error);
-    });
