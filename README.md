@@ -1,2 +1,2 @@
 # Digital Store
-Full Stack Gaming Accessories E-commerce
+Full Stack Project
