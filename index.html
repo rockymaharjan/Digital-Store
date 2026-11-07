@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!-- Tells the browser: "this is modern HTML". Like showing your ID at the gate. -->
+<html lang="en">
+<!-- <html> wraps the whole page. lang="en" = page is in English (helps screen readers). -->
+<head>
+    <!-- <head> = info ABOUT the page. Visitors don't see it. Like the engine under a car's bonnet. -->
+    <meta charset="UTF-8">
+    <!-- Lets the page show all characters properly (Rs., emojis, Nepali text). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Makes the site fit phone screens. Without this, phones show a tiny zoomed-out desktop site. -->
+    <title>Digital Store</title>
+    <!-- The text on the browser tab. -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Connects the style.css file (the "clothes" of the page). -->
+</head>
+
+<body>
+    <!-- <body> = everything the visitor SEES. -->
+
+    <nav class="navbar">
+        <!-- <nav> = the navigation bar, like the signboard of a shop. -->
+        <a href="index.html" class="brand">
+            <!-- Clicking the logo takes you home. -->
+            <img src="Logo/Meshy_AI_.png" alt="Digital Store logo" class="logo">
+            <!-- Your logo. Rename your logo file to logo.png and put it next to index.html. -->
+            <span>Digital Store</span>
+            <!-- The store name beside the logo. -->
+        </a>
+
+        <div class="nav-links">
+            <!-- A box holding all the menu links. -->
+            <a href="index.html">Home</a>
+            <!-- Link to page 1 -->
+            <a href="products.html">Products</a>
+            <!-- Link to page 2 (we build it in Lesson 2) -->
+            <a href="about.html">About</a>
+            <!-- Link to page 3 -->
+            <a href="contact.html">Contact</a>
+            <!-- Link to page 4 -->
+            <a href="cart.html" class="cart-link">
+                <!-- Link to page 5: the cart. -->
+                🛒 <span id="cart-count">0</span>
+                <!-- Cart icon + a number. JavaScript will change this number. id = a unique name tag so JS can find it. -->
+            </a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <!-- <section> = a block of the page. This one is the big welcome banner. -->
+        <h1>Level Up Your Gaming.</h1>
+        <!-- <h1> = biggest heading. Use only ONE per page, like one captain per team. -->
+        <p>Mice, keyboards, headsets and more at great prices.</p>
+        <!-- <p> = a paragraph of text. -->
+        <a href="#products" class="shop-button">Shop Now</a>
+        <!-- #products = jump down to the element with id="products" on this same page. -->
+    </section>
+
+    <section id="products">
+        <!-- id="products" = the name tag the Shop Now button jumps to. -->
+        <h2 class="section-title">Our Products</h2>
+        <!-- <h2> = second-biggest heading. -->
+
+        <div class="product-grid" id="product-grid">
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+    <!-- Connects the JavaScript (the "brain"). It goes LAST so the page loads first, then the brain wakes up. -->
+
+</body>
+</html>

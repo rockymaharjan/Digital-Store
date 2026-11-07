@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Digital Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="brand">
+            <img src="Logo/Meshy_AI_.png"
+                 class="logo" alt="Digital Store">
+            <span>Digital Store</span>
+        </a>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="cart.html">Cart</a>
+        </div>
+    </nav>
+
+    <main class="checkout-page">
+
+        <h1>Checkout</h1>
+
+        <section class="checkout-section">
+            <h2>Customer Details</h2>
+
+            <form id="checkout-form">
+
+                <label>Full Name</label>
+                <input type="text" name="name" required>
+
+                <label>Email Address</label>
+                <input type="email" name="email" required>
+
+                <label>Phone Number</label>
+                <input type="tel" name="phone" required>
+
+                <label>Country</label>
+                <select name="country" required>
+                    <option value="">Select Country</option>
+                    <option value="Nepal">Nepal</option>
+                    <option value="USA">United States</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label>Delivery Address</label>
+                <textarea name="address" required></textarea>
+
+                <h2>Payment Method</h2>
+<label class="payment-option">
+    <input type="radio" name="payment" value="Cash on Delivery" required>
+    Cash on Delivery
+</label>
+
+<label class="payment-option">
+    <input type="radio" name="payment" value="eSewa">
+    eSewa
+</label>
+
+<label class="payment-option">
+    <input type="radio" name="payment" value="Khalti">
+    Khalti
+</label>
+
+<label class="payment-option">
+    <input type="radio" name="payment" value="PayPal">
+    PayPal
+</label>
+
+<label class="payment-option">
+    <input type="radio" name="payment" value="Card">
+    Credit / Debit Card
+                </label>
+
+                <button type="submit" id="place-order-btn">
+                    Place Order
+                </button>
+
+            </form>
+        </section>
+
+        <section class="checkout-section">
+            <h2>Order Summary</h2>
+            <div id="checkout-summary"></div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
