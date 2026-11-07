@@ -37,7 +37,7 @@ const productImages = {
     "Speakers": "Product Images/Speakers.jpg",
     "Webcam": "Product Images/Webcam.jpg",
     "Monitor": "Product Images/Monitor.jpg",
-    "Gaming Chair": "Product Images/Gaming Chair.jpg"
+    "Gaming Chair": "Product Images/Gaming Chair.webp"
 };
 
 async function loadProducts() {
