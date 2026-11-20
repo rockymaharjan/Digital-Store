@@ -11,7 +11,8 @@ export default function AppTabs() {
     <NativeTabs
       backgroundColor={colors.background}
       indicatorColor={colors.backgroundElement}
-      labelStyle={{ selected: { color: colors.text } }}>
+      labelStyle={{ selected: { color: colors.text } }}
+    >
       <NativeTabs.Trigger name="index">
         <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
@@ -20,12 +21,28 @@ export default function AppTabs() {
         />
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="explore">
-        <NativeTabs.Trigger.Label>Explore</NativeTabs.Trigger.Label>
+      <NativeTabs.Trigger name="products">
+        <NativeTabs.Trigger.Label>Products</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
-          src={require('@/assets/images/tabIcons/explore.png')}
-          renderingMode="template"
-        />
+  src={require('@/assets/images/tabIcons/explore.png')}
+  renderingMode="template"
+/>
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="cart">
+        <NativeTabs.Trigger.Label>Cart</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+  src={require('@/assets/images/tabIcons/explore.png')}
+  renderingMode="template"
+/>
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="contact">
+        <NativeTabs.Trigger.Label>Contact</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+  src={require('@/assets/images/tabIcons/explore.png')}
+  renderingMode="template"
+/>
       </NativeTabs.Trigger>
     </NativeTabs>
   );

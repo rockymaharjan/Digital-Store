@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Digital Store</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 28px 22px;
+            color: #142D4E;
+            font-size: 13px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #142D4E;
+        }
+
+        h2 {
+            font-size: 21px;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .ledger-button {
+            background: #142D4E;
+            color: white;
+        }
+
+        .logout-button {
+            background: #e2e8f0;
+            color: #142D4E;
+        }
+
+        button:hover { opacity: 0.88; }
+
+        .section-heading {
+            margin: 25px 0 6px;
+            font-size: 16px;
+        }
+
+        #message {
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 17px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1150px;
+        }
+
+        th, td {
+            padding: 13px 11px;
+            border-bottom: 1px solid #e8edf3;
+            text-align: left;
+            white-space: nowrap;
+            font-size: 11px;
+        }
+
+        th {
+            color: #64748b;
+            background: #f8fafc;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+
+        tbody tr {
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .paid, .delivered {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .failed, .cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .processing, .confirmed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .shipped {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+
+        @media(max-width: 600px) {
+            body { padding: 15px 10px; }
+            h2 { font-size: 18px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h2>Digital Store Admin Dashboard</h2>
+
+        <div class="header-actions">
+            <button class="ledger-button" id="ledgerButton">
+                View Ledger
+            </button>
+
+            <button class="logout-button" id="logoutButton">
+                Logout
+            </button>
+        </div>
+    </header>
+
+    <h3 class="section-heading">Customer Orders</h3>
+    <p id="message">Loading orders...</p>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Country</th>
+                    <th>Payment Method</th>
+                    <th>Payment Status</th>
+                    <th>Order Status</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+
+            <tbody id="ordersTable"></tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+    const token = sessionStorage.getItem("adminToken");
+
+    if (!token) {
+        window.location.href = "admin-login.html";
+    }
+
+    document.getElementById("logoutButton").addEventListener("click", function() {
+        sessionStorage.removeItem("adminToken");
+        window.location.href = "admin-login.html";
+    });
+
+    document.getElementById("ledgerButton").addEventListener("click", function() {
+        window.location.href = "ledger.html";
+    });
+
+    function createStatusCell(status) {
+        const cell = document.createElement("td");
+        const label = document.createElement("span");
+
+        const safeStatus = status || "Pending";
+
+        label.textContent = safeStatus;
+        label.className = "status " +
+            safeStatus.toLowerCase().replace(/\s+/g, "-");
+
+        cell.appendChild(label);
+        return cell;
+    }
+
+    async function loadOrders() {
+        const message = document.getElementById("message");
+        const table = document.getElementById("ordersTable");
+
+        try {
+            const response = await fetch("http://localhost:5000/api/admin/orders", {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+
+            if (response.status === 401 || response.status === 403) {
+                sessionStorage.removeItem("adminToken");
+                window.location.href = "admin-login.html";
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error("Could not load orders");
+            }
+
+            const orders = await response.json();
+            table.replaceChildren();
+
+            if (orders.length === 0) {
+                message.textContent = "No orders found.";
+                return;
+            }
+
+            orders.forEach(order => {
+                const row = document.createElement("tr");
+
+                const values = [
+                    order.id,
+                    order.customer_name,
+                    order.customer_email,
+                    order.customer_phone,
+                    order.customer_country,
+                    order.payment_method
+                ];
+
+                values.forEach(value => {
+                    const cell = document.createElement("td");
+                    cell.textContent = value ?? "-";
+                    row.appendChild(cell);
+                });
+
+                row.appendChild(createStatusCell(order.payment_status));
+                row.appendChild(createStatusCell(order.order_status));
+
+                const totalCell = document.createElement("td");
+                totalCell.textContent =
+                    "NPR " + Number(order.total_amount).toLocaleString();
+
+                row.appendChild(totalCell);
+
+                row.addEventListener("click", function() {
+                    window.location.href =
+                        "order-details.html?id=" + order.id;
+                });
+
+                table.appendChild(row);
+            });
+
+            message.textContent = "Total orders: " + orders.length;
+
+        } catch (error) {
+            message.textContent = error.message;
+        }
+    }
+
+    if (token) {
+        loadOrders();
+    }
+</script>
+
+</body>
+</html>

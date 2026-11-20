@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details | Digital Store</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", Arial, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 30px 20px;
+            color: #142D4E;
+            font-size: 13px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .back-button {
+            background: #142D4E;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            margin-bottom: 20px;
+        }
+
+        .back-button:hover {
+            background: #1e416b;
+        }
+
+        .page-heading {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0 0 8px;
+        }
+
+        #message {
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 22px;
+        }
+
+        .columns {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .panel {
+            background: white;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        /* Invoice design */
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 18px;
+            border-bottom: 2px solid #142D4E;
+            gap: 15px;
+        }
+
+        .store-name {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .invoice-label {
+            color: #64748b;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .invoice-number {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .section {
+            padding: 18px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            color: #142D4E;
+            margin: 0 0 14px;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: 105px 1fr;
+            gap: 12px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .detail-label {
+            color: #64748b;
+        }
+
+        .detail-value {
+            color: #1e293b;
+            font-weight: 500;
+            overflow-wrap: anywhere;
+        }
+
+        .product-header,
+        .product-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 45px 105px;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .product-header {
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .product-row {
+            padding: 13px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 12px;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .product-quantity,
+        .product-price {
+            text-align: right;
+        }
+
+        .invoice-total {
+            padding-top: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .total-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .total-amount {
+            font-size: 20px;
+            font-weight: 700;
+            color: #142D4E;
+        }
+
+        .invoice-footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 10px;
+            margin-top: 22px;
+        }
+
+        /* Management panel */
+
+        .management-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0 0 16px;
+        }
+
+        .current-status {
+            font-size: 12px;
+            color: #475569;
+            margin-bottom: 12px;
+        }
+
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: white;
+            font-family: inherit;
+            font-size: 12px;
+            color: #142D4E;
+            margin: 8px 0;
+        }
+
+        button.update-button {
+            background: #2563EB;
+            color: white;
+            border: none;
+            padding: 11px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            width: 100%;
+            margin: 5px 0 8px;
+        }
+
+        button.update-button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled,
+        select:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .management-divider {
+            border: none;
+            border-top: 1px solid #e2e8f0;
+            margin: 22px 0;
+        }
+
+        .payment-details {
+            margin-bottom: 12px;
+        }
+
+        .message {
+            font-size: 11px;
+            min-height: 15px;
+            margin: 5px 0;
+        }
+
+        .success {
+            color: #15803d;
+        }
+
+        .error {
+            color: #dc2626;
+        }
+
+        @media(max-width: 750px) {
+            body {
+                padding: 15px 10px;
+            }
+
+            .columns {
+                grid-template-columns: 1fr;
+            }
+
+            .panel {
+                padding: 18px;
+            }
+        }
+
+        @media(max-width: 400px) {
+            .detail-row {
+                grid-template-columns: 85px 1fr;
+            }
+
+            .product-header,
+            .product-row {
+                grid-template-columns: minmax(0, 1fr) 30px 85px;
+                gap: 5px;
+            }
+
+            .total-amount {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <button class="back-button" onclick="history.back()">← Back</button>
+
+    <h2 class="page-heading" id="heading">Order Details</h2>
+    <p id="message">Loading order...</p>
+
+    <div class="columns">
+
+        <!-- Invoice -->
+        <section class="panel">
+
+            <div class="invoice-header">
+                <div>
+                    <div class="store-name">DIGITAL STORE</div>
+                    <div class="invoice-label">Order Invoice</div>
+                </div>
+
+                <div>
+                    <div class="invoice-label">Invoice Number</div>
+                    <div class="invoice-number" id="invoiceNumber">—</div>
+                </div>
+            </div>
+
+            <div class="section">
+
+                <h3 class="section-title">Customer Information</h3>
+
+                <div id="customerDetails"></div>
+
+            </div>
+
+            <div class="section">
+
+                <h3 class="section-title">Purchased Products</h3>
+
+                <div class="product-header">
+                    <span>Product</span>
+                    <span style="text-align:right;">Qty</span>
+                    <span style="text-align:right;">Unit Price</span>
+                </div>
+
+                <div id="products"></div>
+
+            </div>
+
+            <div class="invoice-total">
+                <span class="total-label">TOTAL AMOUNT</span>
+                <span class="total-amount" id="total">NPR 0</span>
+            </div>
+
+            <div class="invoice-footer">
+                Thank you for shopping with Digital Store.
+            </div>
+
+        </section>
+
+        <!-- Order and payment management -->
+        <section class="panel">
+
+            <h3 class="management-title">Order Management</h3>
+
+            <div id="orderStatus" class="current-status"></div>
+
+            <select id="statusSelect">
+                <option>Pending</option>
+                <option>Confirmed</option>
+                <option>Processing</option>
+                <option>Shipped</option>
+                <option>Delivered</option>
+                <option>Cancelled</option>
+            </select>
+
+            <button class="update-button" id="updateStatusButton">
+                Update Order Status
+            </button>
+
+            <p id="statusMessage" class="message"></p>
+
+            <hr class="management-divider">
+
+            <h3 class="management-title">Payment Information</h3>
+
+            <div id="paymentDetails" class="payment-details"></div>
+
+            <h4 class="section-title">Update Payment Status</h4>
+
+            <select id="paymentStatusSelect">
+                <option value="Pending">Pending</option>
+                <option value="Paid">Paid</option>
+                <option value="Failed">Failed</option>
+                <option value="Refunded">Refunded</option>
+            </select>
+
+            <button class="update-button" id="updatePaymentButton">
+                Update Payment
+            </button>
+
+            <p id="paymentStatusMessage" class="message"></p>
+
+        </section>
+
+    </div>
+</div>
+
+<script>
+
+    const token = sessionStorage.getItem("adminToken");
+
+    const orderId = new URLSearchParams(
+        window.location.search
+    ).get("id");
+
+    let currentPaymentId = null;
+
+    if (!token) {
+        window.location.href = "admin-login.html";
+    }
+
+    // Create a clean invoice detail row
+    function createDetailRow(label, value) {
+
+        const row = document.createElement("div");
+        row.className = "detail-row";
+
+        const labelElement = document.createElement("span");
+        labelElement.className = "detail-label";
+        labelElement.textContent = label;
+
+        const valueElement = document.createElement("span");
+        valueElement.className = "detail-value";
+        valueElement.textContent = value ?? "-";
+
+        row.appendChild(labelElement);
+        row.appendChild(valueElement);
+
+        return row;
+    }
+
+    // Load order information
+    async function loadOrder() {
+
+        const message = document.getElementById("message");
+
+        try {
+
+            const response = await fetch(
+                `http://localhost:5000/api/admin/orders/${encodeURIComponent(orderId)}`,
+                {
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
+                }
+            );
+
+            if (response.status === 401 || response.status === 403) {
+                sessionStorage.removeItem("adminToken");
+                window.location.href = "admin-login.html";
+                return;
+            }
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Could not load order");
+            }
+
+            const order = data.order;
+
+            document.getElementById("heading").textContent =
+                "Order #" + order.id;
+
+            document.getElementById("invoiceNumber").textContent =
+                "INV-" + order.id;
+
+            // Customer information
+            const customerDetails =
+                document.getElementById("customerDetails");
+
+            customerDetails.replaceChildren();
+
+            customerDetails.appendChild(
+                createDetailRow("Customer", order.customer_name)
+            );
+
+            customerDetails.appendChild(
+                createDetailRow("Email", order.customer_email)
+            );
+
+            customerDetails.appendChild(
+                createDetailRow("Phone", order.customer_phone)
+            );
+
+            customerDetails.appendChild(
+                createDetailRow("Country", order.customer_country)
+            );
+
+            customerDetails.appendChild(
+                createDetailRow("Address", order.customer_address)
+            );
+
+            // Purchased products
+            const products = document.getElementById("products");
+
+            products.replaceChildren();
+
+            data.items.forEach(item => {
+
+                const row = document.createElement("div");
+                row.className = "product-row";
+
+                const name = document.createElement("span");
+                name.className = "product-name";
+                name.textContent = item.name;
+
+                const quantity = document.createElement("span");
+                quantity.className = "product-quantity";
+                quantity.textContent = item.quantity;
+
+                const price = document.createElement("span");
+                price.className = "product-price";
+                price.textContent =
+                    "NPR " + Number(item.price).toLocaleString();
+
+                row.appendChild(name);
+                row.appendChild(quantity);
+                row.appendChild(price);
+
+                products.appendChild(row);
+
+            });
+
+            // Order total
+            document.getElementById("total").textContent =
+                "NPR " + Number(order.total_amount).toLocaleString();
+
+            // Order status
+            document.getElementById("orderStatus").textContent =
+                "Current order status: " +
+                (order.order_status || "Pending");
+
+            document.getElementById("statusSelect").value =
+                order.order_status || "Pending";
+
+            // Payment information
+            const payments = document.getElementById("paymentDetails");
+
+            payments.replaceChildren();
+
+            const paymentButton =
+                document.getElementById("updatePaymentButton");
+
+            const paymentSelect =
+                document.getElementById("paymentStatusSelect");
+
+            currentPaymentId = null;
+
+            if (data.payments.length > 0) {
+
+                const payment = data.payments[0];
+
+                currentPaymentId = payment.id;
+
+                payments.appendChild(
+                    createDetailRow("Payment ID", payment.id)
+                );
+
+                payments.appendChild(
+                    createDetailRow("Method", payment.payment_method)
+                );
+
+                payments.appendChild(
+                    createDetailRow("Status", payment.payment_status)
+                );
+
+                payments.appendChild(
+                    createDetailRow(
+                        "Amount",
+                        "NPR " + Number(payment.amount).toLocaleString()
+                    )
+                );
+
+                payments.appendChild(
+                    createDetailRow(
+                        "Payment Date",
+                        payment.payment_date
+                            ? new Date(payment.payment_date).toLocaleString()
+                            : "Not recorded"
+                    )
+                );
+
+                paymentSelect.value = payment.payment_status;
+
+                paymentButton.disabled = false;
+                paymentSelect.disabled = false;
+
+            } else {
+
+                payments.textContent = "No payment record found.";
+
+                paymentButton.disabled = true;
+                paymentSelect.disabled = true;
+
+            }
+
+            message.textContent = "Order loaded successfully.";
+
+        } catch (error) {
+
+            message.textContent = error.message;
+
+        }
+    }
+
+    // Update order status
+    document.getElementById("updateStatusButton")
+        .addEventListener("click", async function() {
+
+            const status =
+                document.getElementById("statusSelect").value;
+
+            const message =
+                document.getElementById("statusMessage");
+
+            const button = this;
+
+            button.disabled = true;
+
+            message.className = "message";
+            message.textContent = "Updating order status...";
+
+            try {
+
+                const response = await fetch(
+                    `http://localhost:5000/api/admin/orders/${encodeURIComponent(orderId)}/status`,
+                    {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + token
+                        },
+                        body: JSON.stringify({ status })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.error || "Could not update order status"
+                    );
+                }
+
+                document.getElementById("orderStatus").textContent =
+                    "Current order status: " +
+                    data.order.order_status;
+
+                message.className = "message success";
+                message.textContent =
+                    "Order status updated successfully!";
+
+            } catch (error) {
+
+                message.className = "message error";
+                message.textContent = error.message;
+
+            } finally {
+
+                button.disabled = false;
+
+            }
+
+        });
+
+    // Update payment status
+    document.getElementById("updatePaymentButton")
+        .addEventListener("click", async function() {
+
+            const status =
+                document.getElementById("paymentStatusSelect").value;
+
+            const message =
+                document.getElementById("paymentStatusMessage");
+
+            const button = this;
+
+            if (!currentPaymentId) {
+
+                message.className = "message error";
+                message.textContent = "No payment record found.";
+
+                return;
+            }
+
+            button.disabled = true;
+
+            message.className = "message";
+            message.textContent = "Updating payment status...";
+
+            try {
+
+                const response = await fetch(
+                    `http://localhost:5000/api/admin/payments/${currentPaymentId}/status`,
+                    {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + token
+                        },
+                        body: JSON.stringify({ status })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.error || "Could not update payment status"
+                    );
+                }
+
+                await loadOrder();
+
+                message.className = "message success";
+                message.textContent =
+                    "Payment status updated successfully!";
+
+            } catch (error) {
+
+                message.className = "message error";
+                message.textContent = error.message;
+
+            } finally {
+
+                button.disabled = false;
+
+            }
+
+        });
+
+    // Load requested order
+    if (token && orderId) {
+        loadOrder();
+    } else if (!orderId) {
+        document.getElementById("message").textContent =
+            "No order ID provided.";
+    }
+
+</script>
+
+</body>
+</html>

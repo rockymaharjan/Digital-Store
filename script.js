@@ -1,8 +1,9 @@
+
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 
 // ==========================================
-// 2. CART COUNTER
+// 1. CART COUNTER
 // ==========================================
 
 const cartBadge = document.getElementById("cart-count");
@@ -21,12 +22,11 @@ function updateCartCount() {
 
 
 // ==========================================
-// 3. ADD PRODUCTS TO CART
+// 2. PRODUCT IMAGES
 // ==========================================
 
 const productGrid = document.getElementById("product-grid");
 
-// Connect database product names to your existing images
 const productImages = {
     "Gaming Mouse": "Product Images/Mouse.jpg",
     "Gaming Keyboard": "Product Images/Keyboard.jpg",
@@ -39,6 +39,11 @@ const productImages = {
     "Monitor": "Product Images/Monitor.jpg",
     "Gaming Chair": "Product Images/Gaming Chair.webp"
 };
+
+
+// ==========================================
+// 3. LOAD PRODUCTS FROM DATABASE
+// ==========================================
 
 async function loadProducts() {
 
@@ -80,7 +85,9 @@ async function loadProducts() {
 
             const button = document.createElement("button");
             button.className = "add-btn";
+
             button.dataset.name = product.name;
+            button.dataset.productId = product.id;
             button.dataset.price = product.price;
             button.dataset.stock = product.stock;
 
@@ -108,6 +115,7 @@ async function loadProducts() {
     } catch (error) {
 
         console.log("Product loading error:", error);
+
         productGrid.textContent =
             "Unable to load products. Please try again.";
 
@@ -130,6 +138,7 @@ if (productGrid) {
         if (!button || button.disabled) return;
 
         const name = button.dataset.name;
+        const productId = Number(button.dataset.productId);
         const price = Number(button.dataset.price);
         const stock = Number(button.dataset.stock);
 
@@ -151,6 +160,7 @@ if (productGrid) {
         } else {
 
             cart.push({
+                productId: productId,
                 name: name,
                 price: price,
                 quantity: 1,
@@ -162,13 +172,14 @@ if (productGrid) {
         localStorage.setItem("cart", JSON.stringify(cart));
 
         updateCartCount();
+
     });
 
 }
 
 
 // ==========================================
-// 4. DISPLAY CART PRODUCTS
+// 5. DISPLAY CART PRODUCTS
 // ==========================================
 
 const cartItems = document.getElementById("cart-items");
@@ -181,8 +192,10 @@ function displayCart() {
     }
 
     if (cart.length === 0) {
+
         cartItems.innerHTML = "<p>Your cart is empty.</p>";
         cartTotal.textContent = "Total: Rs. 0";
+
         return;
     }
 
@@ -214,16 +227,19 @@ function displayCart() {
 
             </div>
         `;
+
     });
 
     cartItems.innerHTML = output;
 
-    cartTotal.textContent = "Total: Rs. " + total.toLocaleString();
+    cartTotal.textContent =
+        "Total: Rs. " + total.toLocaleString();
+
 }
 
 
 // ==========================================
-// 5. INCREASE, DECREASE AND REMOVE PRODUCTS
+// 6. INCREASE, DECREASE AND REMOVE PRODUCTS
 // ==========================================
 
 if (cartItems) {
@@ -232,9 +248,7 @@ if (cartItems) {
 
         const button = event.target.closest("button");
 
-        if (!button) {
-            return;
-        }
+        if (!button) return;
 
         const index = Number(button.dataset.index);
         const action = button.dataset.action;
@@ -248,11 +262,13 @@ if (cartItems) {
         }
 
         if (action === "decrease") {
+
             cart[index].quantity--;
 
             if (cart[index].quantity <= 0) {
                 cart.splice(index, 1);
             }
+
         }
 
         if (action === "remove") {
@@ -263,12 +279,14 @@ if (cartItems) {
 
         updateCartCount();
         displayCart();
+
     });
+
 }
 
 
 // ==========================================
-// 6. CHECKOUT BUTTON
+// 7. CHECKOUT BUTTON
 // ==========================================
 
 const checkoutButton = document.getElementById("checkout-btn");
@@ -278,17 +296,22 @@ if (checkoutButton) {
     checkoutButton.addEventListener("click", function() {
 
         if (cart.length === 0) {
+
             alert("Your cart is empty!");
+
         } else {
+
             window.location.href = "checkout.html";
+
         }
 
     });
+
 }
 
 
 // ==========================================
-// 7. CHECKOUT ORDER SUMMARY
+// 8. CHECKOUT ORDER SUMMARY
 // ==========================================
 
 const checkoutForm = document.getElementById("checkout-form");
@@ -317,16 +340,17 @@ if (checkoutSummary) {
         cart.length === 0
             ? "Your cart is empty."
             : summary + "\nGrand Total: Rs. " + total.toLocaleString();
+
 }
 
 
 // ==========================================
-// 8. PLACE PRACTICE ORDER
+// 9. PLACE REAL ORDER
 // ==========================================
 
 if (checkoutForm) {
 
-    checkoutForm.addEventListener("submit", function(event) {
+    checkoutForm.addEventListener("submit", async function(event) {
 
         event.preventDefault();
 
@@ -346,33 +370,152 @@ if (checkoutForm) {
             payment: formData.get("payment")
         };
 
-        const total = cart.reduce(function(sum, product) {
-            return sum + product.price * product.quantity;
-        }, 0);
+        const products = cart.map(function(product) {
+            return {
+                productId: product.productId,
+                quantity: product.quantity
+            };
+        });
 
-        const order = {
-            customer: customer,
-            products: cart,
-            total: total,
-            orderDate: new Date().toISOString()
-        };
+        const button = document.getElementById("place-order-btn");
 
-        localStorage.setItem("lastOrder", JSON.stringify(order));
+        try {
 
-        alert("Practice order placed successfully!");
+            if (!button) {
+                throw new Error("Place Order button was not found.");
+            }
 
-        cart = [];
+            button.disabled = true;
+            button.textContent = "Processing...";
 
-        localStorage.setItem("cart", JSON.stringify(cart));
+            // Choose the correct backend endpoint
 
-        window.location.href = "index.html";
+            let endpoint;
+
+            if (customer.payment === "eSewa") {
+
+                endpoint = "http://localhost:5000/api/esewa/initiate";
+
+            } else if (customer.payment === "Cash on Delivery") {
+
+                endpoint = "http://localhost:5000/api/orders";
+
+            } else {
+
+                throw new Error(
+                    "This payment method is not available yet."
+                );
+
+            }
+
+            const response = await fetch(endpoint, {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    ...customer,
+                    products: products
+                })
+
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Order failed");
+            }
+
+
+            // ----------------------------------
+            // ESEWA PAYMENT REDIRECT
+            // ----------------------------------
+
+            if (customer.payment === "eSewa") {
+
+                const paymentForm = document.createElement("form");
+
+                paymentForm.method = "POST";
+                paymentForm.action = result.paymentUrl;
+
+                Object.entries(result.paymentData).forEach(
+                    function([key, value]) {
+
+                        const input = document.createElement("input");
+
+                        input.type = "hidden";
+                        input.name = key;
+                        input.value = value;
+
+                        paymentForm.appendChild(input);
+
+                    }
+                );
+
+                document.body.appendChild(paymentForm);
+
+                paymentForm.submit();
+
+                return;
+            }
+
+
+            // ----------------------------------
+            // CASH ON DELIVERY SUCCESS
+            // ----------------------------------
+
+            const successMessage =
+                document.getElementById("order-success");
+
+            if (successMessage) {
+
+                successMessage.textContent =
+                    "Order placed successfully! Your Order ID is #" +
+                    result.orderId;
+
+            }
+
+            // Clear cart after successful COD order
+
+            cart = [];
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+
+            updateCartCount();
+
+            if (checkoutSummary) {
+                checkoutSummary.textContent = "Your cart is empty.";
+            }
+
+            checkoutForm.reset();
+
+        } catch (error) {
+
+            console.log("Checkout error:", error);
+
+            alert(error.message);
+
+        } finally {
+
+            if (button) {
+
+                button.disabled = false;
+                button.textContent = "Place Order";
+
+            }
+
+        }
 
     });
+
 }
 
 
 // ==========================================
-// 9. INITIAL PAGE UPDATE
+// 10. INITIAL PAGE UPDATE
 // ==========================================
 
 updateCartCount();

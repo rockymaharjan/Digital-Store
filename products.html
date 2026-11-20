@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Products | Digital Store</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+
+        <a href="index.html" class="brand">
+            <img src="Logo/Meshy_AI_.png" alt="Digital Store logo" class="logo">
+            <span>Digital Store</span>
+        </a>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="products.html" class="active">Products</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+
+            <a href="cart.html" class="cart-link">
+                <span class="cart-icon">🛒</span>
+                <span>Cart</span>
+                <span id="cart-count">0</span>
+            </a>
+        </div>
+
+    </nav>
+
+
+    <!-- PAGE HEADER -->
+    <main>
+
+        <section class="inner-page-hero">
+            <span class="hero-label">EXPLORE OUR COLLECTION</span>
+            <h1>Our Products</h1>
+            <p>Find the gaming equipment you need to level up your experience.</p>
+        </section>
+
+
+        <!-- PRODUCT COLLECTION -->
+        <section class="products-section">
+
+            <div class="products-heading">
+                <div>
+                    <span class="section-label">GAMING GEAR</span>
+                    <h2 class="section-title">All Products</h2>
+                    <p class="section-description">
+                        Browse our available gaming accessories.
+                    </p>
+                </div>
+            </div>
+
+            <div class="product-grid" id="product-grid">
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- EXISTING STORE JAVASCRIPT -->
+    <script src="script.js"></script>
+
+</body>
+</html>

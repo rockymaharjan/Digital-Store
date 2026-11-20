@@ -1,98 +1,100 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
-
+import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
+import logo from "../../assets/logo.png";
 export default function HomeScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+  <Image source={logo} style={{ width: 45, height: 45, resizeMode: "contain" }} />
+  <Text style={styles.logo}>Digital Store</Text>
+</View>
+        <Text style={styles.cart}>🛒 Cart</Text>
+      </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+      <View style={styles.hero}>
+        <Text style={styles.title}>LEVEL UP YOUR GAMING</Text>
+        <Text style={styles.subtitle}>
+          Discover gaming accessories for your setup.
+        </Text>
+      </View>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+      <Text style={styles.heading}>Featured Products</Text>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      <View style={styles.product}>
+        <Text style={styles.productEmoji}>🖱️</Text>
+        <Text style={styles.productName}>Gaming Mouse</Text>
+        <Text style={styles.price}>Rs. 2,500</Text>
+      </View>
+
+      <View style={styles.product}>
+        <Text style={styles.productEmoji}>⌨️</Text>
+        <Text style={styles.productName}>Gaming Keyboard</Text>
+        <Text style={styles.price}>Rs. 4,500</Text>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    backgroundColor: "#F4F6FA",
+    padding: 20,
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 35,
+    marginBottom: 30,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+  logo: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#142D4E",
+  },
+  cart: {
+    fontSize: 16,
+    color: "#2563EB",
+  },
+  hero: {
+    backgroundColor: "#142D4E",
+    padding: 25,
+    borderRadius: 16,
+    marginBottom: 25,
   },
   title: {
-    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#FFFFFF",
   },
-  code: {
-    textTransform: 'uppercase',
+  subtitle: {
+    color: "#DCE6F5",
+    marginTop: 10,
+    fontSize: 14,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  heading: {
+    fontSize: 21,
+    fontWeight: "bold",
+    color: "#142D4E",
+    marginBottom: 15,
+  },
+  product: {
+    backgroundColor: "#FFFFFF",
+    padding: 20,
+    borderRadius: 14,
+    marginBottom: 15,
+  },
+  productEmoji: {
+    fontSize: 35,
+  },
+  productName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 10,
+  },
+  price: {
+    color: "#2563EB",
+    fontSize: 16,
+    marginTop: 5,
   },
 });
